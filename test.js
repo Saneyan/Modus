@@ -1,13 +1,16 @@
-"use strict";
+/*global window, Modus*/
 
-Modus.modules.log = function( message ){
-  window.console.log( message );
-};  
+(function () {
 
-
-void function( $ ){
+  "use strict";
   
-  $.import( 'log' ).as( 'out' );
-  $.out( 'Hello, world' );
+  Modus.modules.log = function (message) {
+    window.console.log(message);
+  };  
   
-}( new Modus.Namespace() );
+  var $ = new Modus.Namespace();
+  
+  $.import('log').as('out');
+  $.out('Hello, world');
+    
+}());

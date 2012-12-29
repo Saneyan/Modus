@@ -1,74 +1,88 @@
 /**
- *                      Modus version 0.0.1-pre
+ * Modus - A JavaScript Module Manager and Loader
  * 
+ * global Modus
+ * 
+ * @version   0.0.1-pre
  * @author    Saneyuki Tadokoro <post@saneyuki.gfunction.com>
- * @copyright 2012, Saneyuki Tadokoro
+ * @preserve  Copyright 2012 Saneyuki Tadokoro
 */
 
-"use strict";
+var Modus = {};
 
-void function( global ){
+(function () {
   
-  var Modus = global.Modus = {}; 
-  var modules = Modus.modules = {};
+  "use strict";
+
+  var modules, Namespace;
+  modules = Modus.modules = {};
+
   
-  
-  var Namespace = Modus.Namespace = function(){
-  };
-  
-  
-  _extend( Namespace.prototype, {
-    
-      import: function( object ){
-        var selector = [];
-        
-        if( typeof object === 'object' ){
-          for( var key in object )
-            selector.push( key );
-        }
-        else{
-          for( var val, i = 0; val = arguments[ i++ ]; )
-            selector.push( val );
-        }
-        
-        return _import( selector, this );
+  function _extend(destination, source) {
+    var key;
+
+    for (key in source) {
+      if (source.hasOwnProperty(key)) {
+        destination[key] = source[key];
       }
-  });
+    }
+
+    return destination;
+  }
+
+
+  Namespace = Modus.Namespace = function () {};
+
+
+  _extend(Namespace.prototype, {
+
+    import: function (object) {
+      var i, key, selector = [];
+
+      if (typeof object === 'object') {
+        for (key in object) {
+          if (object.hasOwnProperty(key)) {
+            selector.push(key);
+          }
+        }
+      } else {
+        for (i = 0; arguments[i]; i++) {
+          selector.push(arguments[i]);
+        }
+      }
+  
+      return this._import(selector);
+    },
   
   
-  function _import( selector, namespace ){
-    return {
-        from: function( moduleName ){
-          var module;
+    _import: function (selector) {
+      var namespace = this;
+  
+      return {
+        from: function (moduleName) {
+          var i, key, module = modules[moduleName];
           
-          if( module = modules[ moduleName ] ){
-            for( var key, i = 0; key = selector[ i++ ]; ){
-              namespace[ key ] = module[ key ];
+          if (module) {
+            for (i = 0; selector[i]; i++) {
+              key = selector[i];
+              namespace[key] = module[key];
             }
           }
           
           return namespace;
-        }
-        
-      , as: function( name ){
-          var module;
+        },
           
-          if( module = modules[ selector[ 0 ] ] )
-            namespace[ name ] = module;
+        as: function (name) {
+          var module = modules[selector[0]];
+          
+          if (module) {
+            namespace[name] = module;
+          }
           
           return namespace;
         }
-    };
-  };
-  
-  
-  function _extend( destination, source ){
-    for( var key in source ){
-      if( source.hasOwnProperty( key ) )
-        destination[ key ] = source[ key ];
+      };
     }
-    
-    return destination;
-  };
+  });
   
-}( this );
+}());
