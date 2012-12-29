@@ -54,7 +54,7 @@ Modus.module( 'concept', function( $ ){
       // Exporting a method named 'send' to action module.
       action.export( 'send', function(){
         
-        var xhr = new $$.XHR();
+        var xhr = new action.XHR();
         
         xhr.onreadystatechange = function(){
           if( xhr.readyState === 4 ){
@@ -77,8 +77,9 @@ Modus.module( 'concept', function( $ ){
     
     // Re-exporting another exports using wildcard.
     $$.export( '*' ).from( 'Math' );
-    // Re-exporting one of the module's exports.
-    $$.export( 'document' ).from( 'window' );
+    // Re-exporting and renaming one of module's exports.
+    $$.export({ setInterval: 'interval' }).from( 'window' );
+    $$.export({ clearInterval: 'clear' }).from( 'window' );
     
   });
   
@@ -88,9 +89,18 @@ Modus.module( 'concept', function( $ ){
     // Binding an external module to object's property.
     $$.import( 'utility' ).as( 'util' );
     // Exporting a single dynamic value.
-    $$.export = function(){
-      var number = $$.util.random() * 1000;  
-      $$.util.getElementById( 'result' ).innerHTML = number;
+    $$.export = function( count, delay ){
+      
+      var id = $$.util.interval( function(){
+          
+        var number = $$.util.random() * 1000;  
+        $.out( number );
+        
+        count--;
+        if( count <= 0 ) $$.util.clear( id );
+        
+      }, delay );
+      
     };
     
   });
@@ -103,7 +113,7 @@ Modus.module( 'concept', function( $ ){
     $.import( 'random' ).as( 'random' );
     
     $.send(); // It should output "Success :)" or "An error occured :("
-    $.random(); // xxxx (Four-digit number)
+    $.random( 3, 1000 ); // x ~ xxx (Random numbers, three times)
     
   });
 
@@ -122,4 +132,4 @@ Modus.namespace( function( $ ){
   $.export( 'A', function(){ /*...*/ });
   $.module( 'B', function(){ /*...*/ });
   
-})
+});
