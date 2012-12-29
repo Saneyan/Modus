@@ -10,7 +10,7 @@
   
   var $ = new Modus.Namespace();
   
-  $.import('log').as('out');
+  $.imports('log').as('out');
   $.out('Hello, world');
     
 }());

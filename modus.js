@@ -36,7 +36,7 @@ var Modus = {};
 
   _extend(Namespace.prototype, {
 
-    import: function (object) {
+    imports: function (object) {
       var i, key, selector = [];
 
       if (typeof object === 'object') {
@@ -51,11 +51,11 @@ var Modus = {};
         }
       }
   
-      return this._import(selector);
+      return this._imports(selector);
     },
   
   
-    _import: function (selector) {
+    _imports: function (selector) {
       var namespace = this;
   
       return {
