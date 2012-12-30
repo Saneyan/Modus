@@ -1,4 +1,4 @@
-/*global console, setTimeout, Modus*/
+/*global console, Math, setTimeout, Modus*/
 
 (function () {
 
@@ -14,6 +14,10 @@
       setTimeout(function () {
         console.log('Timeout!');
       }, delay);
+    },
+    
+    random: function () {
+      return Math.random() * 1000;
     }
   };
   
@@ -25,5 +29,15 @@
    
   $.out('Hello, world');
   $.timer(2000);
+  
+  
+  Modus.namespace(function ( ns ) {
+    
+    ns.imports('log').as('out');
+    ns.imports('random', 'timer').from('test');
+    ns.timer(1000);
+    ns.out(ns.random());
+    
+  });
     
 }());

@@ -35,7 +35,6 @@ var Modus = {};
 
 
   _extend(Namespace.prototype, {
-
     imports: function (object) {
       var i, key, selector = [];
 
@@ -84,5 +83,11 @@ var Modus = {};
       };
     }
   });
+  
+  
+  Modus.namespace = function (factory) {
+    var ns = new Namespace();
+    factory(ns);
+  };
   
 }());
