@@ -88,82 +88,75 @@ var Modus = {};
   }
   
   
-  function _overload(args) {
-    this._args = args;
-    return this;
-  }
-  
-  
-  _overload.def = function () {
-    var temp,
-        args = [].slice.call(arguments),
-        method = args.pop();
-        
-    if(typeof method !== 'function' || args.length <= 0){
-      return this;
-    }
+  var _overload = {
     
-    temp = this._temp || (this._temp = []);
-    temp.push({ types: args, method: method });
-    
-    return this;
-  };
-  
-  
-  _overload.end = function () {
-    var clone = _clone(this._temp);
-    
-    delete this._temp;
-    
-    return function () {
-      var i, j, k, arg, match, candidate, type, types, method, ptr;
-      
-      for (i = 0; clone[i]; i++) {
-        candidate = clone[i];
-        types = candidate.types;
-        method = candidate.method;
-        ptr = 0;
-        
-        for (j = 0; types[j]; j++) {
-          type = types[j];
+    def: function () {
+      var temp,
+          args = [].slice.call(arguments),
+          method = args.pop();
           
-          if (type instanceof Array) {
-            for (k = 0; type[k]; k++) {
-              arg = arguments[ptr++];
+      if(typeof method !== 'function' || args.length <= 0){
+        return this;
+      }
+      
+      temp = this._temp || (this._temp = []);
+      temp.push({ types: args, method: method });
+      
+      return this;
+    },
+    
+    
+    end: function () {
+      var clone = _clone(this._temp);
+      
+      delete this._temp;
+      
+      return function () {
+        var i, j, match, candidate, type, types, method, ptr, nptr, object;
+        
+        for (i = 0; clone[i]; i++) {
+          candidate = clone[i];
+          types = candidate.types;
+          method = candidate.method;
+          ptr = nptr = 0;
+          
+          while (ptr < arguments.length) {
+            type = types[nptr];
+            
+            if (type instanceof Array) {
+              for (j = 0; type[j]; j++) {
+                object = arguments[ptr++];
+                
+                if (!_isMatch(object, type[j])) {
+                  match = false;
+                  break;
+                }
+              }
               
-              if (!_isMatch(arg, type[k])) {
+              nptr++;
+              
+            } else {
+              object = arguments[ptr++];
+              
+              if (!_isMatch(object, type)) {
                 match = false;
-                break;
               }
             }
-          } else {
-            arg = arguments[ptr++];
             
-            if (!_isMatch(arg, type)) {
-              match = false;
+            if (match === false) {
+              break;
             }
           }
           
-          if (match === false) {
-            break;
+          if (match !== false) {
+            return method.apply(this, arguments);
+          } else {
+            match = undefined;
           }
         }
-        
-        if (match !== false) {
-          return method.apply(this, arguments);
-        } else {
-          match = undefined;
-        }
-      }
-    };
+      };
+    }
   };
-  
-  
-  _overload.run = function () {
-    this.end()(this._args);
-    delete this._args;
-  };
-  
   
 
   Namespace = Modus.Namespace = function () {};
@@ -189,6 +182,7 @@ var Modus = {};
           this[hash[key]] = module[key];
         }
       }
+      
       
       return this;
     },

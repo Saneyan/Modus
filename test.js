@@ -31,6 +31,18 @@
   $.timer(2000);
   
   
+  var ns = new Modus.Namespace();
+  
+  ns.imports('random', 'timer').from('test')
+    .imports({ random: 'r', timer: 't' }).from('test')
+    .imports('log').as('out');
+  
+  ns.timer(3000);
+  ns.t(3000);
+  ns.out(ns.random());
+  ns.out(ns.r());
+  
+  
   Modus.namespace(function ( ns ) {
     
     ns.imports('log').as('out');
